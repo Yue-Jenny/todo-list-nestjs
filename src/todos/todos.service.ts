@@ -1,36 +1,70 @@
-import { Injectable } from '@nestjs/common';
-import { Todo } from './todos.interface';
+import { Logger, Injectable } from '@nestjs/common';
+import { Todos } from '../entities/todos.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { DeleteResult, Repository } from 'typeorm';
 
+// Using singleton scope is recommended for most use cases.
 @Injectable()
 export class TodosService {
-  private todos: Todo[] = [];
+  private readonly logger = new Logger(TodosService.name);
+  constructor(
+    @InjectRepository(Todos)
+    private todosRepository: Repository<Todos>,
+  ) {}
 
-  create(todo: Todo) {
-    this.todos.push(todo);
-  }
-
-  findAll(): Todo[] {
-    return this.todos;
-  }
-
-  update(id: string, todo: Todo) {
-    const parsedId = parseInt(id, 10);
-
-    const index = this.todos.findIndex((item) => item.id === parsedId);
-    if (index >= 0) {
-      this.todos[index].title = todo.title;
-      this.todos[index].completed = todo.completed;
-      return this.todos[index];
+  findAllTodos(): Promise<Todos[]> {
+    try {
+      return this.todosRepository.find();
+    } catch (error) {
+      this.logger.error(`Find all todos error: ${error}`);
+      throw new Error(error);
     }
-    return null;
   }
 
-  delete(id: string) {
-    const index = this.todos.findIndex((item) => item.id === parseInt(id, 10));
-    if (index >= 0) {
-      this.todos.splice(index, 1);
+  findOneTodoById(id: string): Promise<Todos | null> {
+    try {
+      return this.todosRepository.findOneBy({ id: parseInt(id) });
+    } catch (error) {
+      this.logger.error(`Find all todos error: ${error}`);
+      throw new Error(error);
+    }
+  }
+
+  deleteTodo(id: string): Promise<DeleteResult> {
+    try {
+      this.logger.log(`Delete a todo, id: ${id}`);
+      return this.todosRepository.delete({ id: parseInt(id) });
+    } catch (error) {
+      this.logger.error(`Delete a todo error: ${error}`);
+      throw new Error(error);
+    }
+  }
+
+  updateTodo(id: string, newTodo: Todos): boolean {
+    try {
+      this.logger.log(`Update a todo, id: ${id}`);
+      this.todosRepository.update(
+        { id: parseInt(id) },
+        {
+          ...newTodo,
+        },
+      );
       return true;
+    } catch (error) {
+      this.logger.error(`Update a todo error: ${error}`);
+      throw new Error(error);
     }
-    return false;
+  }
+
+  createTodo(todo: Todos) {
+    try {
+      this.todosRepository.insert({
+        title: todo.title,
+        completed: todo.completed,
+      });
+    } catch (error) {
+      this.logger.error(`Create a todo error: ${error}`);
+      throw new Error(error);
+    }
   }
 }

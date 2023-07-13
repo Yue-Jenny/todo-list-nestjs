@@ -7,8 +7,9 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
-import { Todo } from '../todos/todos.interface';
 import { TodosService } from './todos.service';
+import { DeleteResult } from 'typeorm';
+import { Todos } from 'src/entities/todos.entity';
 
 @Controller('todos')
 export class TodosController {
@@ -19,9 +20,20 @@ export class TodosController {
    * @returns todos
    */
   @Get()
-  findAll(): Todo[] {
-    const todos = this.todosService.findAll();
+  findAll(): Promise<Todos[]> {
+    const todos = this.todosService.findAllTodos();
     return todos;
+  }
+
+  /**
+   * 用 id 取得特定 todo 內容
+   * @param id
+   * @returns
+   */
+  @Get(':id')
+  findById(@Param('id') id: string): Promise<Todos> {
+    const todo = this.todosService.findOneTodoById(id);
+    return todo;
   }
 
   /**
@@ -30,20 +42,20 @@ export class TodosController {
    * @returns todo
    */
   @Post()
-  create(@Body() todo: Todo): Todo {
-    this.todosService.create(todo);
+  create(@Body() todo: Todos): Todos {
+    this.todosService.createTodo(todo);
     return todo;
   }
 
   /**
-   *
+   * 更新 todo 內容
    * @param id
    * @param todo
    * @returns todo or null
    */
   @Put(':id')
-  update(@Param('id') id: string, @Body() todo: Todo): Todo {
-    const result = this.todosService.update(id, todo);
+  update(@Param('id') id: string, @Body() todo: Todos): boolean {
+    const result = this.todosService.updateTodo(id, todo);
     return result;
   }
 
@@ -53,8 +65,8 @@ export class TodosController {
    * @returns boolean
    */
   @Delete(':id')
-  delete(@Param('id') id: string): boolean {
-    const result = this.todosService.delete(id);
+  delete(@Param('id') id: string): Promise<DeleteResult> {
+    const result = this.todosService.deleteTodo(id);
     return result;
   }
 }
