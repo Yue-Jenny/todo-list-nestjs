@@ -10,7 +10,7 @@ import { LoggerMiddleware } from './middleware/logger.middleware';
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: `.env.${process.env.NODE_ENV}`, // 加載特定環境的 .env 文件。
+      envFilePath: `.env`, // 加載特定環境的 .env 文件。
       isGlobal: true, // 全局可見，否則需要在每個模塊中單獨導入 ConfigModule。
     }),
     TypeOrmModule.forRoot({
