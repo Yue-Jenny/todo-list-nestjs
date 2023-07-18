@@ -4,7 +4,7 @@ import { AppService } from './app.service';
 import { TodosModule } from './todos/todos.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
-import { Todos } from './entities/todos.entity';
+import { Todos } from './schema/todos';
 import { LoggerMiddleware } from './middleware/logger.middleware';
 
 @Module({
