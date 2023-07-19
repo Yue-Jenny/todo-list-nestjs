@@ -1,7 +1,9 @@
-import { Logger, Injectable } from '@nestjs/common';
-import { Todos } from '../entities/todos.entity';
+import { Logger, Injectable, NotFoundException } from '@nestjs/common';
+import { Todos } from '../schema/todos';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, Repository } from 'typeorm';
+import { TodosDto } from './todos.dto';
+import { Todo } from '../entity/todo';
 
 // Using singleton scope is recommended for most use cases.
 @Injectable()
@@ -12,7 +14,7 @@ export class TodosService {
     private todosRepository: Repository<Todos>,
   ) {}
 
-  findAllTodos(): Promise<Todos[]> {
+  findAllTodos(): Promise<Todo[]> {
     try {
       return this.todosRepository.find();
     } catch (error) {
@@ -21,7 +23,7 @@ export class TodosService {
     }
   }
 
-  findOneTodoById(id: string): Promise<Todos | null> {
+  findOneTodoById(id: string): Promise<Todo | null> {
     try {
       return this.todosRepository.findOneBy({ id: parseInt(id) });
     } catch (error) {
