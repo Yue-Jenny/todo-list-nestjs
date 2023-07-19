@@ -27,7 +27,7 @@ export class TodosService {
     try {
       return this.todosRepository.findOneBy({ id: parseInt(id) });
     } catch (error) {
-      this.logger.error(`Find all todos error: ${error}`);
+      this.logger.error(`Catch an error when finding all todos: ${error}`);
       throw new Error(error);
     }
   }
