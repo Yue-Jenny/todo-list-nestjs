@@ -9,7 +9,8 @@ import {
 } from '@nestjs/common';
 import { TodosService } from './todos.service';
 import { DeleteResult } from 'typeorm';
-import { Todos } from 'src/entities/todos.entity';
+import { TodosDto } from './todos.dto';
+import { Todo } from '../entity/todo';
 
 @Controller('/api/v1/todos')
 export class TodosController {
@@ -20,7 +21,7 @@ export class TodosController {
    * @returns todos
    */
   @Get()
-  findAll(): Promise<Todos[]> {
+  findAll(): Promise<Todo[]> {
     const todos = this.todosService.findAllTodos();
     return todos;
   }
@@ -31,7 +32,7 @@ export class TodosController {
    * @returns
    */
   @Get(':id')
-  findById(@Param('id') id: string): Promise<Todos> {
+  findById(@Param('id') id: string): Promise<Todo> {
     const todo = this.todosService.findOneTodoById(id);
     return todo;
   }
@@ -42,9 +43,9 @@ export class TodosController {
    * @returns todo
    */
   @Post()
-  create(@Body() todo: Todos): Todos {
-    this.todosService.createTodo(todo);
-    return todo;
+  create(@Body() todo: TodosDto) {
+    const createTodoResult = this.todosService.createTodo(todo);
+    return createTodoResult;
   }
 
   /**
@@ -54,9 +55,9 @@ export class TodosController {
    * @returns todo or null
    */
   @Put(':id')
-  update(@Param('id') id: string, @Body() todo: Todos): boolean {
-    const result = this.todosService.updateTodo(id, todo);
-    return result;
+  update(@Param('id') id: string, @Body() todo: TodosDto) {
+    const updateTodoResult = this.todosService.updateTodo(id, todo);
+    return updateTodoResult;
   }
 
   /**
@@ -66,7 +67,7 @@ export class TodosController {
    */
   @Delete(':id')
   delete(@Param('id') id: string): Promise<DeleteResult> {
-    const result = this.todosService.deleteTodo(id);
-    return result;
+    const deleteTodoResult = this.todosService.deleteTodo(id);
+    return deleteTodoResult;
   }
 }
