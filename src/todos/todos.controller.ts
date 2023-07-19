@@ -11,7 +11,7 @@ import { TodosService } from './todos.service';
 import { DeleteResult } from 'typeorm';
 import { Todos } from 'src/entities/todos.entity';
 
-@Controller('todos')
+@Controller('/api/v1/todos')
 export class TodosController {
   constructor(private todosService: TodosService) {}
 
