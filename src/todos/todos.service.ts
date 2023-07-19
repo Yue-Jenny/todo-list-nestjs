@@ -75,12 +75,18 @@ export class TodosService {
     return updatedTodo;
   }
 
-  createTodo(todo: Todos) {
+  async createTodo(newTodo: TodosDto): Promise<Todo> {
     try {
-      this.todosRepository.insert({
-        title: todo.title,
-        completed: todo.completed,
+      const result = await this.todosRepository.insert({
+        title: newTodo.title,
+        completed: newTodo.completed,
       });
+
+      const todo = new Todo();
+      todo.id = result.identifiers[0].id;
+      todo.title = newTodo.title;
+      todo.completed = newTodo.completed;
+      return todo;
     } catch (error) {
       this.logger.error(`Create a todo error: ${error}`);
       throw new Error(error);
