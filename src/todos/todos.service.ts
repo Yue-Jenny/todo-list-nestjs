@@ -35,7 +35,7 @@ export class TodosService {
   deleteTodo(id: string): Promise<DeleteResult> {
     try {
       this.logger.log(`Delete a todo, id: ${id}`);
-      return this.todosRepository.delete({ id: parseInt(id) });
+      return this.todosRepository.softDelete({ id: parseInt(id) });
     } catch (error) {
       this.logger.error(`Delete a todo error: ${error}`);
       throw new Error(error);
