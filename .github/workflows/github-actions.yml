@@ -1,1 +1,28 @@
+name: todos-unit-test
 
+on:
+  push:
+    branches: ['dev']
+    # 使用 paths 過濾了 'src/**'，這表示僅當在 src/ 目錄下有更改時才觸發 Workflow。
+    # paths: 
+    #   - 'src/**'
+  pull_request:
+    branches: ['main','stage']
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [19.x]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: npm ci # ci 的主要目的是在持續集成（CI）或自動化部署的環境中，以一個乾淨且可重複的方式進行套件安裝。npm ci 會針對 package-lock.json 來還原套件。
+
+      - name: Test code
+        run: npm run test
