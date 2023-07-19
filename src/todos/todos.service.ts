@@ -42,20 +42,37 @@ export class TodosService {
     }
   }
 
-  updateTodo(id: string, newTodo: Todos): boolean {
+  async updateTodo(id: string, newTodo: TodosDto): Promise<Todo> {
+    this.logger.log(`Update a todo, id: ${id}`);
+
+    let record = null;
     try {
-      this.logger.log(`Update a todo, id: ${id}`);
-      this.todosRepository.update(
-        { id: parseInt(id) },
-        {
+      record = await this.todosRepository
+        .createQueryBuilder()
+        .update(Todos)
+        .set({
           ...newTodo,
-        },
-      );
-      return true;
+        })
+        .where('todos.id = :id', {
+          id: parseInt(id),
+        })
+        .andWhere('todos.deletedDate is NULL')
+        .execute();
     } catch (error) {
       this.logger.error(`Update a todo error: ${error}`);
       throw new Error(error);
     }
+
+    if (!record.affected) {
+      this.logger.error(`Id:${id} record is not exist.`);
+      throw new NotFoundException(`Id:${id} record is not exist.`);
+    }
+
+    const updatedTodo = new Todo();
+    updatedTodo.id = parseInt(id);
+    updatedTodo.title = newTodo.title;
+    updatedTodo.completed = newTodo.completed;
+    return updatedTodo;
   }
 
   createTodo(todo: Todos) {
