@@ -37,7 +37,7 @@ export class TodosController {
   }
 
   /**
-   * 建立 todo list
+   * 建立 todo
    * @param todo
    * @returns todo
    */
@@ -60,7 +60,7 @@ export class TodosController {
   }
 
   /**
-   * 刪除 todo list
+   * 刪除 todo
    * @param id
    * @returns boolean
    */
