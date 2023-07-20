@@ -1,4 +1,4 @@
-name: todos-unit-test
+name: Unit Test and Build Image
 
 on:
   push:
@@ -10,13 +10,11 @@ on:
     branches: ['main','stage']
 
 jobs:
-  test:
+  unit-test:
     runs-on: ubuntu-latest
-
     strategy:
       matrix:
         node-version: [19.x]
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -26,3 +24,15 @@ jobs:
 
       - name: Test code
         run: npm run test
+
+  build-image:
+    needs: unit-test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        
+      - name: Build Docker image
+        run: |
+          # Build your Docker image here
+          docker build -t todo-cloud-run:1.0 .
