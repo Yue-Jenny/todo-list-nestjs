@@ -1,4 +1,4 @@
-name: Unit Test and Build Image
+name: Unit test, build image and upload image to GITHUB Container Registry
 
 on:
   push:
