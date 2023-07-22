@@ -6,6 +6,8 @@ import {
   Param,
   Post,
   Put,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { TodosService } from './todos.service';
 import { DeleteResult } from 'typeorm';
@@ -43,6 +45,7 @@ export class TodosController {
    * @returns todo
    */
   @Post()
+  @UsePipes(new ValidationPipe())
   create(@Body() todo: TodosDto) {
     const createTodoResult = this.todosService.createTodo(todo);
     return createTodoResult;
@@ -55,6 +58,7 @@ export class TodosController {
    * @returns todo or null
    */
   @Put(':id')
+  @UsePipes(new ValidationPipe())
   update(@Param('id') id: string, @Body() todo: TodosDto) {
     const updateTodoResult = this.todosService.updateTodo(id, todo);
     return updateTodoResult;
