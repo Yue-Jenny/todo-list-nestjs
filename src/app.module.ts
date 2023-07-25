@@ -6,6 +6,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { Todos } from './schema/todos';
 import { LoggerMiddleware } from './middleware/logger.middleware';
+import { JwtMiddleware } from './middleware/jwt.middleware';
 
 @Module({
   imports: [
@@ -31,5 +32,6 @@ import { LoggerMiddleware } from './middleware/logger.middleware';
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(LoggerMiddleware).forRoutes('*');
+    consumer.apply(JwtMiddleware).forRoutes('*');
   }
 }
